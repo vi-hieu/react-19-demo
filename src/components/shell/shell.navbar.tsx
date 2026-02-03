@@ -1,4 +1,4 @@
-import { AppShell, ScrollArea, Tabs } from '@mantine/core';
+import { ScrollArea, Tabs } from '@mantine/core';
 
 import { DemoTab } from '../demo/demo.tab';
 
@@ -8,17 +8,19 @@ interface NavbarItem {
 }
 
 const items: NavbarItem[] = [
-  { value: 'use', label: 'use' },
-  { value: 'use-optimistic', label: 'useOptimistic' },
+  { value: 'use-promise', label: 'use(promise)' },
+  { value: 'use-context', label: 'use(Context)' },
+  { value: 'use-optimistic', label: 'useOptimistic()' },
 ];
 
 export const ShellNavbar = () => {
   return (
-    <AppShell.Navbar>
-      <ScrollArea>
+    <aside className='sticky top-15 z-100 h-[calc(100vh-3.75rem)] w-60 border-r'>
+      <ScrollArea component='nav'>
         <Tabs.List
           h='100%'
-          p={12}
+          pr={12}
+          py={12}
         >
           {items.map(item => (
             <DemoTab
@@ -30,6 +32,6 @@ export const ShellNavbar = () => {
           ))}
         </Tabs.List>
       </ScrollArea>
-    </AppShell.Navbar>
+    </aside>
   );
 };

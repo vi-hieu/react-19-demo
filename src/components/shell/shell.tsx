@@ -1,46 +1,37 @@
-import { AppShell, type AppShellMainProps, Burger, Tabs, Text } from '@mantine/core';
-import { useDisclosure } from '@mantine/hooks';
+import { Tabs, Text } from '@mantine/core';
 
 import { ShellNavbar } from './shell.navbar';
 
-export const Shell = ({ children, ...props }: AppShellMainProps) => {
-  const [opened, { toggle }] = useDisclosure();
-
+export const Shell = ({ children, ...props }: React.HTMLAttributes<HTMLElement>) => {
   return (
-    <AppShell
-      header={{ height: 60 }}
-      padding='md'
-      navbar={{
-        width: 240,
-        breakpoint: 'sm',
-        collapsed: { mobile: !opened },
-      }}
-    >
-      <AppShell.Header className='flex items-center px-4'>
-        <Burger
-          hiddenFrom='sm'
-          opened={opened}
-          size='sm'
-          onClick={toggle}
-        />
-
-        <Text
-          fw={600}
-          fz='h2'
-        >
-          React 19 Demo
-        </Text>
-      </AppShell.Header>
+    <div className='flex min-h-screen flex-col pt-15'>
+      <header className='fixed top-0 z-100 flex h-15 w-full items-center border-b px-4'>
+        <div className='container'>
+          <Text
+            fw={600}
+            fz='h2'
+          >
+            React 19 Demo
+          </Text>
+        </div>
+      </header>
 
       <Tabs
-        defaultValue='use'
+        className='container flex'
+        defaultValue='use-promise'
+        keepMounted={false}
         orientation='vertical'
         variant='pills'
       >
         <ShellNavbar />
 
-        <AppShell.Main {...props}>{children}</AppShell.Main>
+        <main
+          className='flex-1 px-12 py-8'
+          {...props}
+        >
+          {children}
+        </main>
       </Tabs>
-    </AppShell>
+    </div>
   );
 };

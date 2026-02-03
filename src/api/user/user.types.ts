@@ -76,3 +76,9 @@ export interface FilterUsersParams {
   key?: ExtractKeys<User>;
   value?: string | number;
 }
+
+export interface GetUsersPayload {
+  litmit?: number;
+  skip?: number;
+  select?: ExtractKeys<User>[];
+}

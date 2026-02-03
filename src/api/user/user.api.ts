@@ -1,23 +1,30 @@
 import { Resource } from '../constants';
 import { fetcher } from '../fetch';
-import type { FilterUsersParams, User } from './user.types';
+import { stringify } from '../utils';
+import type { FilterUsersParams, GetUsersPayload, User } from './user.types';
 
-export const getUser = async () => fetcher<User>(`${Resource.Users}/1`);
+export const getUser = async (id: number) => fetcher<User>(`${Resource.Users}/${id.toString()}`);
 
-export const getUsers = async () => fetcher<User[]>(Resource.Users);
+export const getUsers = async (options?: GetUsersPayload, filter?: string | FilterUsersParams) => {
+  const _options: GetUsersPayload = {
+    litmit: 50,
+    skip: 0,
+    ...options,
+  };
 
-export const getUsers = async (params: FilterUsersParams) => {
-  const query = new URLSearchParams();
+  if (!filter) {
+    const params = stringify(_options);
 
-  if (params.search) {
-    query.append('search', params.search.toString());
+    return fetcher<User[]>(`${Resource.Users}${params}`);
   }
 
-  if (params.key && params.value) {
-    query.append(params.key, params.value.toString());
+  if (typeof filter === 'string') {
+    const params = stringify({ q: filter, ..._options });
+
+    return fetcher<User[]>(`${Resource.Users}/search${params}`);
   }
 
-  const queryString = query.toString() ? `?${query.toString()}` : '';
+  const params = stringify({ filter, ..._options });
 
-  return fetcher<User[]>(`${Resource.Users}${queryString}`);
+  return fetcher<User[]>(`${Resource.Users}/filter${params}`);
 };
