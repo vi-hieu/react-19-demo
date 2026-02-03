@@ -1,16 +1,17 @@
 export const API_URL = 'https://dummyjson.com';
 
 export const Resource = {
-	Auth: '/auth',
-	Products: '/products',
-	Recipes: '/recipes',
-	Users: '/users',
+  Auth: '/auth',
+  Products: '/products',
+  Recipes: '/recipes',
+  Users: '/users',
 } as const;
 
 export const QueryKey = {
-	User: 'user',
+  User: 'user',
+  Users: 'users',
 } as const;
 
 export const CookieKey = {
-	AccessToken: 'access-token',
+  AccessToken: 'access-token',
 } as const;

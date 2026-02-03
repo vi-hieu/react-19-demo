@@ -1,7 +1,7 @@
-import { AppShell, type AppShellMainProps, Burger, Code, Tabs } from '@mantine/core';
+import { AppShell, type AppShellMainProps, Burger, Tabs, Text } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 
-import { DemoTab } from '../demo/demo.tab';
+import { ShellNavbar } from './shell.navbar';
 
 export const Shell = ({ children, ...props }: AppShellMainProps) => {
   const [opened, { toggle }] = useDisclosure();
@@ -11,12 +11,12 @@ export const Shell = ({ children, ...props }: AppShellMainProps) => {
       header={{ height: 60 }}
       padding='md'
       navbar={{
-        width: 300,
+        width: 240,
         breakpoint: 'sm',
         collapsed: { mobile: !opened },
       }}
     >
-      <AppShell.Header>
+      <AppShell.Header className='flex items-center px-4'>
         <Burger
           hiddenFrom='sm'
           opened={opened}
@@ -24,23 +24,20 @@ export const Shell = ({ children, ...props }: AppShellMainProps) => {
           onClick={toggle}
         />
 
-        <div>React 19 Demo</div>
+        <Text
+          fw={600}
+          fz='h2'
+        >
+          React 19 Demo
+        </Text>
       </AppShell.Header>
 
       <Tabs
         defaultValue='use'
         orientation='vertical'
+        variant='pills'
       >
-        <AppShell.Navbar>
-          <Tabs.List>
-            <DemoTab value='use'>
-              <Code>use()</Code>
-            </DemoTab>
-            <DemoTab value='use-optimistic'>
-              <Code>useOptimistic()</Code>
-            </DemoTab>
-          </Tabs.List>
-        </AppShell.Navbar>
+        <ShellNavbar />
 
         <AppShell.Main {...props}>{children}</AppShell.Main>
       </Tabs>

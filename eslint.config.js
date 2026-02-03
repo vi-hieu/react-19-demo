@@ -26,7 +26,7 @@ export default defineConfig([
   },
   ...jabworksPlugin.configs.react,
   {
-    files: ['**/*/App.tsx'],
+    files: ['**/*/App.tsx', 'vite.config.ts'],
     rules: {
       'import/no-default-export': 'off',
       'unicorn/filename-case': 'off',

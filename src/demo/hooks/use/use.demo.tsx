@@ -1,6 +1,6 @@
 import { Suspense, use } from 'react';
 
-import { Code } from '@mantine/core';
+import { Code, Skeleton } from '@mantine/core';
 
 import { getUser } from '../../../api/user/user.api';
 import { DemoPanel } from '../../../components/demo/demo.panel';
@@ -23,7 +23,14 @@ export const UseDemo = () => {
       title={<Code fz='inherit'>use()</Code>}
       value='use'
     >
-      <Suspense fallback={<div>Loading...</div>}>
+      <Suspense
+        fallback={
+          <Skeleton
+            height={20}
+            width={100}
+          />
+        }
+      >
         <UseDemoContent />
       </Suspense>
     </DemoPanel>

@@ -1,3 +1,5 @@
+import type { ExtractKeys } from '../../lib/types';
+
 export interface User {
   id: number;
   firstName: string;
@@ -68,4 +70,9 @@ export interface Crypto {
 export interface Hair {
   color: string;
   type: string;
+}
+
+export interface FilterUsersParams {
+  key?: ExtractKeys<User>;
+  value?: string | number;
 }
