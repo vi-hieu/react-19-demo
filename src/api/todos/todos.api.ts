@@ -4,7 +4,13 @@ import { stringify } from '../utils';
 import type { AddTodoPayload, GetTodosOptions, Todo, TodosResponse, UpdateTodoPayload } from './todos.types';
 
 export const getTodos = async (options?: GetTodosOptions) => {
-  const params = stringify(options);
+  const _options: GetTodosOptions = {
+    limit: 5,
+    skip: 0,
+    ...options,
+  };
+
+  const params = stringify(_options);
 
   return fetcher<TodosResponse>(`${Resource.Todos}${params}`);
 };

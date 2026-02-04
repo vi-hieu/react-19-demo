@@ -3,6 +3,7 @@ export interface Todo {
   todo: string;
   completed: boolean;
   userId: number;
+  isPending?: boolean;
 }
 
 export interface TodosResponse {

@@ -15,7 +15,7 @@ const items: NavbarItem[] = [
 
 export const ShellNavbar = () => {
   return (
-    <aside className='sticky top-15 z-100 h-[calc(100vh-3.75rem)] w-60 border-r'>
+    <aside className='sticky top-15 z-100 h-[calc(100vh-3.75rem)] w-50 border-r'>
       <ScrollArea component='nav'>
         <Tabs.List
           h='100%'

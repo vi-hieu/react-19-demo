@@ -3,9 +3,24 @@
 @import 'tailwindcss';
 @import '@mantine/core/styles.layer.css';
 
+@theme inline {
+  --color-white: var(--mantine-color-body);
+  --color-black: var(--mantine-color-black);
+}
+
 @layer base {
   * {
     border-color: var(--mantine-color-default-border);
+  }
+
+  html {
+    scrollbar-gutter: stable;
+    scrollbar-width: thin;
+  }
+
+  body {
+    color: var(--mantine-color-text);
+    background-color: var(--mantine-color-body);
   }
 }
 
