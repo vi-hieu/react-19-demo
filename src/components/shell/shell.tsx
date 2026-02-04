@@ -9,9 +9,9 @@ export const Shell = ({ children, ...props }: React.HTMLAttributes<HTMLElement>)
 
   return (
     <div className='flex min-h-screen flex-col'>
-      <header className='sticky top-0 z-100 flex h-15 w-full items-center border-b bg-white px-4'>
+      <header className='sticky top-0 z-100 flex h-15 w-full items-center bg-white px-4'>
         <Group
-          className='container'
+          className='container h-full border-x border-b'
           gap='sm'
         >
           <img
@@ -29,7 +29,7 @@ export const Shell = ({ children, ...props }: React.HTMLAttributes<HTMLElement>)
       </header>
 
       <Tabs
-        className='container flex'
+        className='container flex border-x'
         defaultValue='use-promise'
         keepMounted={false}
         orientation='vertical'

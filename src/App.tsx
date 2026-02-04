@@ -2,6 +2,7 @@ import { MantineProvider } from '@mantine/core';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
 import { Shell } from './components/shell';
+import { FormActionsDemo } from './demo/actions/form-actions';
 import { UseContextDemo } from './demo/hooks/use-context';
 import { UseOptimisticDemo } from './demo/hooks/use-optimistic';
 import { UsePromise } from './demo/hooks/use-promise';
@@ -22,6 +23,8 @@ const App = () => {
           <UseContextDemo />
 
           <UseOptimisticDemo />
+
+          <FormActionsDemo />
         </Shell>
       </MantineProvider>
     </QueryClientProvider>

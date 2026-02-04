@@ -11,6 +11,7 @@ const items: NavbarItem[] = [
   { value: 'use-promise', label: 'use(promise)' },
   { value: 'use-context', label: 'use(Context)' },
   { value: 'use-optimistic', label: 'useOptimistic()' },
+  { value: 'form-actions', label: 'Form Actions' },
 ];
 
 export const ShellNavbar = () => {
