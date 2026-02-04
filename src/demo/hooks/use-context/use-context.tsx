@@ -1,8 +1,9 @@
-import { createContext, use, useState } from 'react';
+import { createContext, use } from 'react';
 
-import { Badge, Button, Card, Code, Group, Stack, Text, Title } from '@mantine/core';
+import { Badge, Card, Code, Skeleton, Stack, Text, Title } from '@mantine/core';
+import { Demo } from '@mantinex/demo';
 
-import { DemoControls } from '../../../components/demo/demo.controls';
+import { useGetUsers } from '../../../api/user/user.queries';
 import { DemoPanel } from '../../../components/demo/demo.panel';
 
 interface ThemeContextValue {
@@ -13,20 +14,8 @@ interface ThemeContextValue {
 
 const ThemeContext = createContext<ThemeContextValue | null>(null);
 
-const UserCard = ({ userId, showTheme }: { userId: number; showTheme: boolean }) => {
-  if (userId <= 0) {
-    return (
-      <Card
-        withBorder
-        padding='md'
-        radius='md'
-      >
-        <Text c='dimmed'>No user selected</Text>
-      </Card>
-    );
-  }
-
-  const theme = showTheme ? use(ThemeContext) : null;
+const UserCard = ({ name, email, enableTheme }: { name: string; email: string; enableTheme: boolean }) => {
+  const theme = enableTheme ? use(ThemeContext) : null;
 
   return (
     <Card
@@ -38,39 +27,31 @@ const UserCard = ({ userId, showTheme }: { userId: number; showTheme: boolean })
         backgroundColor: theme?.mode === 'dark' ? '#1a1a1a' : undefined,
       }}
     >
-      <Stack gap='sm'>
+      <Stack gap='xs'>
         <Title
           c={theme?.mode === 'dark' ? 'white' : undefined}
-          order={4}
+          order={5}
         >
-          User #{userId}
+          {name}
         </Title>
+        <Text
+          c={theme?.mode === 'dark' ? 'gray.4' : 'dimmed'}
+          size='sm'
+        >
+          {email}
+        </Text>
         {theme ? (
-          <Group gap='xs'>
-            <Badge
-              color='blue'
-              variant='light'
-            >
-              Theme: {theme.mode}
-            </Badge>
-            <Badge
-              style={{ backgroundColor: theme.primary, color: 'white' }}
-              variant='light'
-            >
-              Primary
-            </Badge>
-            <Badge
-              style={{ backgroundColor: theme.secondary, color: 'white' }}
-              variant='light'
-            >
-              Secondary
-            </Badge>
-          </Group>
-        ) : null}
-        {!theme && (
+          <Badge
+            color={theme.mode === 'dark' ? 'blue' : 'cyan'}
+            size='sm'
+            variant='light'
+          >
+            {theme.mode} theme
+          </Badge>
+        ) : (
           <Text
             c='dimmed'
-            size='sm'
+            size='xs'
           >
             Theme disabled
           </Text>
@@ -80,25 +61,16 @@ const UserCard = ({ userId, showTheme }: { userId: number; showTheme: boolean })
   );
 };
 
-const UserList = ({ userIds, showTheme }: { userIds: number[]; showTheme: boolean }) => {
-  return (
-    <Stack gap='md'>
-      {userIds.map(userId => {
-        return (
-          <UserCard
-            key={userId}
-            showTheme={showTheme}
-            userId={userId}
-          />
-        );
-      })}
-    </Stack>
-  );
-};
-
-export const UseContextDemo = () => {
-  const [showTheme, setShowTheme] = useState(true);
-  const [themeMode, setThemeMode] = useState<'light' | 'dark'>('light');
+const ContextDemo = ({
+  limit,
+  enableTheme,
+  themeMode,
+}: {
+  limit: number;
+  enableTheme: boolean;
+  themeMode: 'light' | 'dark';
+}) => {
+  const { data, isLoading } = useGetUsers({ limit, skip: 0 });
 
   const themeValue: ThemeContextValue = {
     primary: themeMode === 'light' ? '#228be6' : '#1c7ed6',
@@ -106,6 +78,37 @@ export const UseContextDemo = () => {
     mode: themeMode,
   };
 
+  if (isLoading) {
+    return (
+      <Stack gap='sm'>
+        {Array.from({ length: limit }).map((_, idx) => (
+          <Skeleton
+            key={idx}
+            height={100}
+            radius='md'
+          />
+        ))}
+      </Stack>
+    );
+  }
+
+  return (
+    <ThemeContext.Provider value={themeValue}>
+      <Stack gap='sm'>
+        {data?.users.map(user => (
+          <UserCard
+            key={user.id}
+            email={user.email}
+            enableTheme={enableTheme}
+            name={`${user.firstName} ${user.lastName}`}
+          />
+        ))}
+      </Stack>
+    </ThemeContext.Provider>
+  );
+};
+
+export const UseContextDemo = () => {
   return (
     <DemoPanel
       title='use(Context)'
@@ -117,45 +120,129 @@ export const UseContextDemo = () => {
         </>
       }
     >
-      <Stack gap='lg'>
-        <DemoControls
-          description={
-            <>
-              💡 <Code>use()</Code> is called conditionally based on <Code>showTheme</Code> state, which would violate
-              Rules of Hooks with <Code>useContext()</Code>
-            </>
-          }
-        >
-          <Group gap='md'>
-            <Button
-              size='sm'
-              variant={showTheme ? 'filled' : 'light'}
-              onClick={() => {
-                setShowTheme(!showTheme);
-              }}
-            >
-              {showTheme ? 'Disable' : 'Enable'} Theme Context
-            </Button>
-            <Button
-              disabled={!showTheme}
-              size='sm'
-              variant='outline'
-              onClick={() => {
-                setThemeMode(prev => (prev === 'light' ? 'dark' : 'light'));
-              }}
-            >
-              Switch to {themeMode === 'light' ? 'Dark' : 'Light'} Mode
-            </Button>
-          </Group>
-        </DemoControls>
-
-        <ThemeContext.Provider value={themeValue}>
-          <UserList
-            showTheme={showTheme}
-            userIds={[1, 2, 3]}
-          />
-        </ThemeContext.Provider>
-      </Stack>
+      <Demo
+        data={{
+          type: 'configurator',
+          component: ContextDemo,
+          centered: true,
+          code: [
+            { code: usageCode, fileName: 'demo.tsx', language: 'tsx' },
+            { code: componentCode, fileName: 'user-card.tsx', language: 'tsx' },
+            { code: comparisonCode, fileName: 'comparison.tsx', language: 'tsx' },
+          ],
+          controls: [
+            {
+              type: 'number',
+              prop: 'limit',
+              initialValue: 3,
+              libraryValue: 3,
+              min: 1,
+              max: 10,
+            },
+            {
+              type: 'boolean',
+              prop: 'enableTheme',
+              initialValue: true,
+              libraryValue: true,
+            },
+            {
+              type: 'segmented',
+              prop: 'themeMode',
+              initialValue: 'light',
+              libraryValue: 'light',
+              data: [
+                { value: 'light', label: 'Light' },
+                { value: 'dark', label: 'Dark' },
+              ],
+            },
+          ],
+        }}
+      />
     </DemoPanel>
   );
 };
+
+const usageCode = `
+import { useGetUsers } from './api/user';
+
+const Demo = () => {
+  const themeValue = {
+    primary: '#228be6',
+    secondary: '#fa5252',
+    mode: 'light',
+  };
+
+  return (
+    <ThemeContext.Provider value={themeValue}>
+      <UserList{{props}} />
+    </ThemeContext.Provider>
+  );
+};
+`;
+
+const componentCode = `import { createContext, use } from 'react';
+
+const ThemeContext = createContext<ThemeContextValue | null>(null);
+
+const UserList = ({
+  limit,
+  enableTheme,
+  themeMode,
+}: {
+  limit: number;
+  enableTheme: boolean;
+  themeMode: 'light' | 'dark';
+}) => {
+  const { data: users } = useGetUsers({ limit });
+
+  return (
+    <div>
+      {data?.users.map(user => (
+        <UserCard
+          key={user.id}
+          name={\`\${user.firstName} \${user.lastName}\`}
+          email={user.email}
+          enableTheme={enableTheme}
+        />
+      ))}
+    </div>
+  )
+};
+
+
+const UserCard = ({ name, email, enableTheme }: Props) => {
+  /** React 19: \`use()\` can be called conditionally */
+  /** This would violate Rules of Hooks with \`useContext()\` */
+  const theme = enableTheme ? use(ThemeContext) : null;
+
+  return (
+    <Card style={{ borderColor: theme?.primary }}>
+      <h5>{name}</h5>
+      <p>{email}</p>
+      {theme ? (
+        <Badge>{theme.mode} theme</Badge>
+      ) : (
+        <span>Theme disabled</span>
+      )}
+    </Card>
+  );
+};
+`;
+
+const comparisonCode = `
+/** \`useContext()\` must be called unconditionally */
+const Component = ({ showTheme }) => {
+  // Breaks Rules of Hooks
+  const theme = showTheme ? useContext(ThemeContext) : null;
+
+  return <div>{theme?.mode}</div>;
+};
+
+/** \`use()\` can be called conditionally */
+const Component = ({ showTheme }) => {
+  // Works
+  const theme = showTheme ? use(ThemeContext) : null;
+
+  return <div>{theme?.mode}</div>;
+};
+`;

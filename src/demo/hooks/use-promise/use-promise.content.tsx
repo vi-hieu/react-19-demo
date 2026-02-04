@@ -91,7 +91,7 @@ export const UsePromiseContent = ({ userPromise }: UsePromiseContentProps) => {
             </Text>
           </div>
 
-          <div>
+          {/* <div>
             <Text
               fw={600}
               mb={4}
@@ -161,7 +161,7 @@ export const UsePromiseContent = ({ userPromise }: UsePromiseContentProps) => {
             >
               📏 {data.height}cm, {data.weight}kg
             </Text>
-          </div>
+          </div> */}
         </Stack>
       </Card>
     </Stack>

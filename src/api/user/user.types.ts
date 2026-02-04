@@ -78,7 +78,14 @@ export interface FilterUsersParams {
 }
 
 export interface GetUsersPayload {
-  litmit?: number;
+  limit?: number;
   skip?: number;
   select?: ExtractKeys<User>[];
+}
+
+export interface GetUsersResponse {
+  users: User[];
+  total: number;
+  skip: number;
+  limit: number;
 }

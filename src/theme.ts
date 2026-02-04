@@ -2,5 +2,6 @@ import { createTheme } from '@mantine/core';
 
 export const theme = createTheme({
   defaultRadius: 'md',
-  black: '#202020',
+  black: '#21201C',
+  white: '#FDFDFC',
 });

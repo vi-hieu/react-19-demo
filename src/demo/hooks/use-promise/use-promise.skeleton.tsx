@@ -70,7 +70,7 @@ export const UsePromiseSkeleton = () => {
             />
           </div>
 
-          <div>
+          {/* <div>
             <Skeleton
               height={18}
               mb={8}
@@ -124,7 +124,7 @@ export const UsePromiseSkeleton = () => {
               height={16}
               width='45%'
             />
-          </div>
+          </div> */}
         </Stack>
       </Card>
     </Stack>
