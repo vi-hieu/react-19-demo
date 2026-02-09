@@ -28,8 +28,9 @@ const delay = (ms: number) =>
     setTimeout(resolve, ms);
   });
 
-const OptimisticTodoList = ({ apiDelay }: { apiDelay: number }) => {
+const OptimisticTodoList = ({ apiDelay, enableErrors }: { apiDelay: number; enableErrors: boolean }) => {
   const [todos, setTodos] = useState<Todo[]>(INITIAL_TODOS);
+  const [error, setError] = useState<string | null>(null);
 
   const [optimisticTodos, setOptimisticTodos] = useOptimistic(todos, (state: Todo[], action: OptimisticAction) => {
     switch (action.type) {
@@ -63,17 +64,26 @@ const OptimisticTodoList = ({ apiDelay }: { apiDelay: number }) => {
     startTransition(async () => {
       // Optimistic update happens immediately
       setOptimisticTodos({ type: 'add', todo: text, tempId });
+      setError(null);
 
       try {
         // Simulate API call with delay
         await delay(apiDelay);
 
+        // Simulate controlled failures based on enableErrors
+        if (enableErrors) {
+          throw new Error('Failed to add todo');
+        }
+
         // Actual state update after "API" completes
         const newId = Math.max(...todos.map(t => t.id), 0) + 1;
 
         setTodos(prev => [...prev, { id: newId, todo: text, completed: false, userId: 1 }]);
-      } catch {
-        // Handle error - would need to revert optimistic update
+      } catch (err) {
+        // Error handling: optimistic update automatically reverts when transition completes
+        // because we don't update the real state
+        setError((err as Error).message);
+        console.error('Failed to add todo:', err);
       }
     });
   };
@@ -85,14 +95,22 @@ const OptimisticTodoList = ({ apiDelay }: { apiDelay: number }) => {
 
     startTransition(async () => {
       setOptimisticTodos({ type: 'toggle', id });
+      setError(null);
 
       try {
         // Simulate API call with delay
         await delay(apiDelay);
 
+        // Simulate controlled failures based on enableErrors
+        if (enableErrors) {
+          throw new Error('Failed to toggle todo');
+        }
+
         setTodos(prev => prev.map(t => (t.id === id ? { ...t, completed: !t.completed } : t)));
-      } catch {
-        // Handle error
+      } catch (err) {
+        // Optimistic update reverts automatically
+        setError((err as Error).message);
+        console.error('Failed to toggle todo:', err);
       }
     });
   };
@@ -100,14 +118,22 @@ const OptimisticTodoList = ({ apiDelay }: { apiDelay: number }) => {
   const handleDeleteTodo = (id: number) => {
     startTransition(async () => {
       setOptimisticTodos({ type: 'delete', id });
+      setError(null);
 
       try {
         // Simulate API call with delay
         await delay(apiDelay);
 
+        // Simulate controlled failures based on enableErrors
+        if (enableErrors) {
+          throw new Error('Failed to delete todo');
+        }
+
         setTodos(prev => prev.filter(t => t.id !== id));
-      } catch {
-        // Handle error - would need to restore the todo
+      } catch (err) {
+        // Optimistic update reverts: deleted todo reappears
+        setError((err as Error).message);
+        console.error('Failed to delete todo:', err);
       }
     });
   };
@@ -117,6 +143,21 @@ const OptimisticTodoList = ({ apiDelay }: { apiDelay: number }) => {
       gap='md'
       w={400}
     >
+      {error ? (
+        <Card
+          withBorder
+          bg='red.0'
+          c='red.9'
+          padding='sm'
+          radius='md'
+        >
+          <Group gap='xs'>
+            <X size={16} />
+            <Text size='sm'>{error}</Text>
+          </Group>
+        </Card>
+      ) : null}
+
       <Group gap='sm'>
         <TextInput
           flex={1}
@@ -224,6 +265,8 @@ const OptimisticTodoList = ({ apiDelay }: { apiDelay: number }) => {
 export const UseOptimisticDemo = () => {
   return (
     <DemoPanel
+      docsLink='https://react.dev/reference/react/useOptimistic'
+      docsTitle='useOptimistic – React'
       title='useOptimistic()'
       value='use-optimistic'
       description={
@@ -251,6 +294,12 @@ export const UseOptimisticDemo = () => {
               min: 500,
               max: 3000,
               step: 500,
+            },
+            {
+              type: 'boolean',
+              prop: 'enableErrors',
+              initialValue: false,
+              libraryValue: false,
             },
           ],
         }}

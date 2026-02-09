@@ -1,27 +1,61 @@
-import { Tabs, type TabsPanelProps, Text, Title } from '@mantine/core';
+import { Anchor, Divider, Group, Tabs, type TabsPanelProps, Text, Title } from '@mantine/core';
+import { BookOpenTextIcon } from 'lucide-react';
 
-interface DemoPanelProps extends Omit<TabsPanelProps, 'title'> {
-  title: React.ReactNode;
+interface DemoPanelProps extends TabsPanelProps {
   description?: React.ReactNode;
+  docsLink?: string;
+  docsTitle?: string;
 }
 
-export const DemoPanel = ({ title, description, children, ...props }: DemoPanelProps) => {
+export const DemoPanel = ({ title, description, docsLink, docsTitle, children, ...props }: DemoPanelProps) => {
   return (
     <Tabs.Panel {...props}>
-      <Title
-        mb={20}
-        order={1}
-      >
-        {title}
-      </Title>
+      <title>{`React 19 Demo${title ? ` | ${title}` : ''}`}</title>
 
-      <Text
-        c='dimmed'
-        mb={20}
-      >
-        {description}
-      </Text>
-      {children}
+      <div className='px-12 py-8'>
+        <Title
+          fz={44}
+          mb={4}
+        >
+          {title}
+        </Title>
+
+        <Text
+          c='dimmed'
+          className='*:text-base'
+          fz='lg'
+          mb={12}
+        >
+          {description}
+        </Text>
+
+        <Group>
+          <Text
+            c='dimmed'
+            fz='sm'
+          >
+            Documentation:
+          </Text>
+
+          <Group gap='sm'>
+            <BookOpenTextIcon className='text-base text-(--mantine-color-dimmed)' />
+
+            <Anchor
+              c='black'
+              fz='sm'
+              href={docsLink}
+              rel='noopener noreferrer'
+              target='_blank'
+            >
+              {docsTitle ?? 'React docs'}
+            </Anchor>
+          </Group>
+        </Group>
+      </div>
+
+      <Divider />
+
+      <article className='px-12 py-8'>{children}</article>
     </Tabs.Panel>
   );
 };

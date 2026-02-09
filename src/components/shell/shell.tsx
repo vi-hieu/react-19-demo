@@ -20,8 +20,8 @@ export const Shell = ({ children, ...props }: React.HTMLAttributes<HTMLElement>)
             src={ReactLogo}
           />
           <Text
-            fw={600}
-            fz='h2'
+            fw={700}
+            fz='h3'
           >
             React 19 Demo
           </Text>
@@ -29,7 +29,7 @@ export const Shell = ({ children, ...props }: React.HTMLAttributes<HTMLElement>)
       </header>
 
       <Tabs
-        className='container flex border-x'
+        className='container flex border-x px-0'
         defaultValue='use-promise'
         keepMounted={false}
         orientation='vertical'
@@ -40,7 +40,7 @@ export const Shell = ({ children, ...props }: React.HTMLAttributes<HTMLElement>)
         <ShellNavbar />
 
         <main
-          className='flex-1 px-12 py-8'
+          className='flex-1'
           {...props}
         >
           {children}

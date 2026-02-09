@@ -81,9 +81,9 @@ const ContextDemo = ({
   if (isLoading) {
     return (
       <Stack gap='sm'>
-        {Array.from({ length: limit }).map((_, idx) => (
+        {Array.from({ length: limit }, (_, idx) => (
           <Skeleton
-            key={idx}
+            key={`skeleton-${idx.toString()}`}
             height={100}
             radius='md'
           />
@@ -111,6 +111,8 @@ const ContextDemo = ({
 export const UseContextDemo = () => {
   return (
     <DemoPanel
+      docsLink='https://react.dev/reference/react/use'
+      docsTitle='use – React'
       title='use(Context)'
       value='use-context'
       description={
@@ -180,39 +182,18 @@ const Demo = () => {
 };
 `;
 
-const componentCode = `import { createContext, use } from 'react';
+const componentCode = `
+import { use } from 'react';
 
-const ThemeContext = createContext<ThemeContextValue | null>(null);
-
-const UserList = ({
-  limit,
-  enableTheme,
-  themeMode,
-}: {
-  limit: number;
+interface UserCardProps {
+  name: string;
+  email: string;
   enableTheme: boolean;
-  themeMode: 'light' | 'dark';
-}) => {
-  const { data: users } = useGetUsers({ limit });
+}
 
-  return (
-    <div>
-      {data?.users.map(user => (
-        <UserCard
-          key={user.id}
-          name={\`\${user.firstName} \${user.lastName}\`}
-          email={user.email}
-          enableTheme={enableTheme}
-        />
-      ))}
-    </div>
-  )
-};
-
-
-const UserCard = ({ name, email, enableTheme }: Props) => {
-  /** React 19: \`use()\` can be called conditionally */
-  /** This would violate Rules of Hooks with \`useContext()\` */
+const UserCard = ({ name, email, enableTheme }: UserCardProps) => {
+  // React 19: use() can be called conditionally
+  // This would violate Rules of Hooks with useContext()
   const theme = enableTheme ? use(ThemeContext) : null;
 
   return (
@@ -230,17 +211,19 @@ const UserCard = ({ name, email, enableTheme }: Props) => {
 `;
 
 const comparisonCode = `
-/** \`useContext()\` must be called unconditionally */
-const Component = ({ showTheme }) => {
-  // Breaks Rules of Hooks
+import { use, useContext } from 'react';
+
+// ❌ useContext() must be called unconditionally
+const OldWay = ({ showTheme }: { showTheme: boolean }) => {
+  // This breaks Rules of Hooks!
   const theme = showTheme ? useContext(ThemeContext) : null;
 
   return <div>{theme?.mode}</div>;
 };
 
-/** \`use()\` can be called conditionally */
-const Component = ({ showTheme }) => {
-  // Works
+// ✅ use() can be called conditionally
+const NewWay = ({ showTheme }: { showTheme: boolean }) => {
+  // This works perfectly in React 19
   const theme = showTheme ? use(ThemeContext) : null;
 
   return <div>{theme?.mode}</div>;

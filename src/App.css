@@ -3,6 +3,11 @@
 @import 'tailwindcss';
 @import '@mantine/core/styles.layer.css';
 
+:root[data-mantine-color-scheme='light'],
+:host([data-mantine-color-scheme='light']) {
+  --mantine-color-dimmed: #838383;
+}
+
 @theme inline {
   --color-white: var(--mantine-color-body);
   --color-black: var(--mantine-color-black);
@@ -27,4 +32,9 @@
 @utility container {
   padding-inline: 1rem;
   margin-inline: auto;
+}
+
+.lucide {
+  width: 1em;
+  height: 1em;
 }

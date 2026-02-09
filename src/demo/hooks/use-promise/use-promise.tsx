@@ -54,6 +54,8 @@ export const UsePromise = ({ id }: { id: number }) => {
 export const UsePromiseDemo = () => {
   return (
     <DemoPanel
+      docsLink='https://react.dev/reference/react/use'
+      docsTitle='use – React'
       title='use(promise)'
       value='use-promise'
       description={
@@ -94,25 +96,25 @@ const usageCode = `
 import { UsePromise } from './use-promise';
 
 const Demo = () => {
- return <UserPromise{{props}} />;
-}
+ return <UsePromise{{props}} />;
+};
 `;
 
 const userPromiseCode = `
 import { Suspense } from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
 
-const UserPromise = ({ id }: { id: number }) => {
-  const userPromise = getUser(id)
+const UsePromise = ({ id }: { id: number }) => {
+  const userPromise = getUser(id);
 
   return (
-    <ErrorBoundary FallbackComponent={/* Error Fallback Component */}>
-      <Suspense fallback={<p>>Loading user data...</p>}>
+    <ErrorBoundary FallbackComponent={ErrorFallback}>
+      <Suspense fallback={<p>Loading user data...</p>}>
         <UsePromiseContent userPromise={userPromise} />
       </Suspense>
     </ErrorBoundary>
   );
-}
+};
 `;
 
 const userPromiseContentCode = `

@@ -60,6 +60,8 @@ const RefDemo = ({ label, placeholder }: { label?: string; placeholder?: string 
 export const RefAsPropsDemo = () => {
   return (
     <DemoPanel
+      docsLink='https://react.dev/blog/2024/12/05/react-19#ref-as-a-prop'
+      docsTitle='React 19 – React Blog'
       title='ref as a prop'
       value='ref-as-prop'
       description={
@@ -99,10 +101,11 @@ export const RefAsPropsDemo = () => {
   );
 };
 
-const usageCode = `import { useRef } from 'react';
+const usageCode = `import { useRef, useState } from 'react';
 
 const Demo = () => {
   const inputRef = useRef<HTMLInputElement>(null);
+  const [value, setValue] = useState('');
 
   const focusInput = () => {
     inputRef.current?.focus();
